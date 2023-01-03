@@ -1,3 +1,17 @@
+<script lang="ts">
+	import type { Todo } from '$root/types/Todo'
+
+	// dummy data
+	let todos: Array<Todo> = [
+		{ id: '1e4a59703af84', text: 'Todo 1', completed: true },
+		{ id: '9e09bcd7b9349', text: 'Todo 2', completed: false },
+		{ id: '9e4273a51a37c', text: 'Todo 3', completed: false },
+		{ id: '53ae48bf605cc', text: 'Todo 4', completed: false },
+	]
+
+	$: console.log(todos)
+</script>
+
 <main>
 	<h1 class="title">Todo List</h1>
 
@@ -19,19 +33,26 @@
 		</form>
 
 		<ul class="todo-list">
-			<li class="todo">
-				<div class="todo-item">
-					<div>
-						<input id="todo" class="toggle" type="checkbox" />
-						<label aria-label="Check todo" class="todo-check" for="todo" />
+			{#each todos as todo (todo.id)}
+				<li class="todo">
+					<div class="todo-item">
+						<div>
+							<input
+								id="todo"
+								class="toggle"
+								type="checkbox"
+								checked={todo.completed}
+							/>
+							<label aria-label="Check todo" class="todo-check" for="todo" />
+						</div>
+						<span class="todo-text">{todo.text}</span>
+						<button aria-label="Remove todo" class="remove" />
 					</div>
-					<span class="todo-text">Todo 1</span>
-					<button aria-label="Remove todo" class="remove" />
-				</div>
 
-				<!-- svelte-ignore a11y-autofocus -->
-				<!-- <input class="edit" type="text" autofocus /> -->
-			</li>
+					<!-- svelte-ignore a11y-autofocus -->
+					<!-- <input class="edit" type="text" autofocus /> -->
+				</li>
+			{/each}
 		</ul>
 
 		<div class="actions">
