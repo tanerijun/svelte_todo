@@ -10,8 +10,7 @@
 
 :root {
   --sans-serif: 'Inter', sans-serif;
-
-  --color-bg: hsl(220, 20%, 14%);
+  --color-bg: hsl(192, 15%, 94%);
   --color-text: hsl(0, 0%, 2%);
   --color-title: hsl(357, 49%, 48%);
   --color-highlight: hsl(0, 33%, 64%);
