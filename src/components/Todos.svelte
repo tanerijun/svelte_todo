@@ -1,5 +1,7 @@
 <script lang="ts">
+	import { generateRandomId } from '$root/helpers/generateRandomId'
 	import type { Todo } from '$root/types/Todo'
+	import AddTodo from './AddTodo.svelte'
 
 	// dummy data
 	let todos: Array<Todo> = [
@@ -9,51 +11,57 @@
 		{ id: '53ae48bf605cc', text: 'Todo 4', completed: false },
 	]
 
-	$: console.log(todos)
+	function addTodo(todo: string): void {
+		let newTodo: Todo = {
+			id: generateRandomId(),
+			text: todo,
+			completed: false,
+		}
+
+		todos = [...todos, newTodo]
+	}
+
+	// Mark all todos as true or false
+	function toggleAllTodos(event: MouseEvent): void {
+		const { checked } = event.target as HTMLInputElement
+
+		todos = todos.map((todo) => ({
+			...todo,
+			completed: checked,
+		}))
+	}
 </script>
 
 <main>
 	<h1 class="title">Todo List</h1>
 
 	<section class="todos">
-		<form>
-			<input type="checkbox" id="toggle-all" class="toggle-all" />
-			<label aria-label="Mark all todos as completed" for="toggle-all">
-				Mark all as completed
-			</label>
+		<AddTodo {addTodo} {toggleAllTodos} showMarkAll={todos.length > 0} />
 
-			<!-- svelte-ignore a11y-autofocus -->
-			<input
-				id="new-todo"
-				class="new-todo"
-				placeholder="What needs to be done?"
-				type="text"
-				autofocus
-			/>
-		</form>
-
-		<ul class="todo-list">
-			{#each todos as todo (todo.id)}
-				<li class="todo">
-					<div class="todo-item">
-						<div>
-							<input
-								id="todo"
-								class="toggle"
-								type="checkbox"
-								checked={todo.completed}
-							/>
-							<label aria-label="Check todo" class="todo-check" for="todo" />
+		{#if todos.length > 0}
+			<ul class="todo-list">
+				{#each todos as todo (todo.id)}
+					<li class="todo">
+						<div class="todo-item">
+							<div>
+								<input
+									id="todo"
+									class="toggle"
+									type="checkbox"
+									checked={todo.completed}
+								/>
+								<label aria-label="Check todo" class="todo-check" for="todo" />
+							</div>
+							<span class="todo-text">{todo.text}</span>
+							<button aria-label="Remove todo" class="remove" />
 						</div>
-						<span class="todo-text">{todo.text}</span>
-						<button aria-label="Remove todo" class="remove" />
-					</div>
 
-					<!-- svelte-ignore a11y-autofocus -->
-					<!-- <input class="edit" type="text" autofocus /> -->
-				</li>
-			{/each}
-		</ul>
+						<!-- svelte-ignore a11y-autofocus -->
+						<!-- <input class="edit" type="text" autofocus /> -->
+					</li>
+				{/each}
+			</ul>
+		{/if}
 
 		<div class="actions">
 			<span class="todo-count">0 left</span>
@@ -68,8 +76,6 @@
 </main>
 
 <style>
-	/* Todos */
-
 	.title {
 		font-size: var(--font-80);
 		font-weight: inherit;
@@ -115,42 +121,6 @@
 			0 9px 1px -3px hsla(0, 0%, 0%, 0.2), 0 16px 0 -6px hsl(0, 0%, 96%),
 			0 17px 2px -6px hsla(0, 0%, 0%, 0.2);
 		z-index: -1;
-	}
-
-	/* Add todo */
-
-	.toggle-all {
-		width: 1px;
-		height: 1px;
-		position: absolute;
-		opacity: 0;
-	}
-
-	.toggle-all + label {
-		position: absolute;
-		font-size: 0;
-	}
-
-	.toggle-all + label:before {
-		content: '❯';
-		display: block;
-		padding: var(--spacing-16);
-		font-size: var(--font-24);
-		color: var(--color-gray-58);
-		transform: rotate(90deg);
-	}
-
-	.toggle-all:checked + label:before {
-		color: var(--color-gray-28);
-	}
-
-	.new-todo {
-		width: 100%;
-		padding: var(--spacing-16);
-		padding-left: 60px;
-		font-size: var(--font-24);
-		border: none;
-		border-bottom: 1px solid var(--shadow-1);
 	}
 
 	/* Todo */
