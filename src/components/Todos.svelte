@@ -13,6 +13,7 @@
 	]
 
 	$: console.log(todos)
+	$: todosLeft = todos.filter((todo) => !todo.completed).length
 
 	// Add a todo to todo list
 	function addTodo(todo: string): void {
@@ -73,7 +74,7 @@
 		{/if}
 
 		<div class="actions">
-			<span class="todo-count">0 left</span>
+			<span class="todo-count">{todosLeft} left</span>
 			<div class="filters">
 				<button class="filter">All</button>
 				<button class="filter">Active</button>
