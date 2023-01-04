@@ -1,8 +1,9 @@
 <script lang="ts">
 	import { generateRandomId } from '$root/helpers/generateRandomId'
-	import type { Todo } from '$root/types/Todo'
+	import type { Filter, Todo } from '$root/types/Todo'
 	import AddTodo from './AddTodo.svelte'
 	import TodoComponent from './Todo.svelte'
+	import TodosFilter from './TodosFilter.svelte'
 
 	// dummy data
 	let todos: Array<Todo> = [
@@ -14,6 +15,9 @@
 
 	$: console.log(todos)
 	$: todosLeft = todos.filter((todo) => !todo.completed).length
+
+	let filter: Filter = 'all'
+	$: filteredTodos = filterTodos(todos, filter)
 
 	// Add a todo to todo list
 	function addTodo(todo: string): void {
@@ -57,6 +61,22 @@
 		let currentTodo = todos.findIndex((todo) => todo.id === id)
 		todos[currentTodo].text = text
 	}
+
+	function setFilter(selectedFilter: Filter): void {
+		filter = selectedFilter
+	}
+
+	// Filter todos based on selected filter
+	function filterTodos(todos: Array<Todo>, filter: Filter): Array<Todo> {
+		switch (filter) {
+			case 'all':
+				return todos
+			case 'active':
+				return todos.filter((todo) => !todo.completed)
+			case 'completed':
+				return todos.filter((todo) => todo.completed)
+		}
+	}
 </script>
 
 <main>
@@ -67,7 +87,7 @@
 
 		{#if todos.length > 0}
 			<ul class="todo-list">
-				{#each todos as todo (todo.id)}
+				{#each filteredTodos as todo (todo.id)}
 					<TodoComponent {todo} {toggleTodo} {removeTodo} {editTodo} />
 				{/each}
 			</ul>
@@ -75,11 +95,7 @@
 
 		<div class="actions">
 			<span class="todo-count">{todosLeft} left</span>
-			<div class="filters">
-				<button class="filter">All</button>
-				<button class="filter">Active</button>
-				<button class="filter">Completed</button>
-			</div>
+			<TodosFilter {filter} {setFilter} />
 			<button class="clear-completed">Clear completed</button>
 		</div>
 	</section>
@@ -131,27 +147,5 @@
 			0 9px 1px -3px hsla(0, 0%, 0%, 0.2), 0 16px 0 -6px hsl(0, 0%, 96%),
 			0 17px 2px -6px hsla(0, 0%, 0%, 0.2);
 		z-index: -1;
-	}
-
-	/* Filters */
-
-	.filters {
-		display: flex;
-		gap: var(--spacing-4);
-	}
-
-	.filter {
-		text-transform: capitalize;
-		padding: var(--spacing-4) var(--spacing-8);
-		border: 1px solid transparent;
-		border-radius: var(--radius-base);
-	}
-
-	.filter:hover {
-		border: 1px solid var(--color-highlight);
-	}
-
-	.selected {
-		border-color: var(--color-highlight);
 	}
 </style>
