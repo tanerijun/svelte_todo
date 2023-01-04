@@ -4,9 +4,35 @@
 	export let todo: Todo
 	export let toggleTodo: (id: string) => void
 	export let removeTodo: (id: string) => void
+	export let editTodo: (id: string, text: string) => void
+
+	let editing = false
+
+	function toggleEdit(): void {
+		editing = !editing
+	}
+
+	// Listen for escape or enter, then blur
+	function handleEdit(event: KeyboardEvent): void {
+		let pressedKey = event.key
+		let targetElement = event.target as HTMLInputElement
+
+		if (pressedKey === 'Escape' || pressedKey === 'Enter') {
+			targetElement.blur()
+		}
+	}
+
+	// Edit todo with the value in input box
+	function handleBlur(event: FocusEvent, id: string): void {
+		let targetElement = event.target as HTMLInputElement
+		let newTodo = targetElement.value
+
+		editTodo(id, newTodo)
+		editing = false
+	}
 </script>
 
-<li class="todo">
+<li class:editing class="todo">
 	<div class="todo-item">
 		<div>
 			<input
@@ -18,7 +44,11 @@
 			/>
 			<label aria-label="Check todo" class="todo-check" for="todo" />
 		</div>
-		<span class="todo-text" class:completed={todo.completed}>{todo.text}</span>
+		<span
+			class="todo-text"
+			class:completed={todo.completed}
+			on:dblclick={toggleEdit}>{todo.text}</span
+		>
 		<button
 			aria-label="Remove todo"
 			class="remove"
@@ -26,8 +56,17 @@
 		/>
 	</div>
 
-	<!-- svelte-ignore a11y-autofocus -->
-	<!-- <input class="edit" type="text" autofocus /> -->
+	{#if editing}
+		<!-- svelte-ignore a11y-autofocus -->
+		<input
+			class="edit"
+			type="text"
+			value={todo.text}
+			autofocus
+			on:keydown={(e) => handleEdit(e)}
+			on:blur={(e) => handleBlur(e, todo.id)}
+		/>
+	{/if}
 </li>
 
 <style>

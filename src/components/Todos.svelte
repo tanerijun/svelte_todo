@@ -48,8 +48,13 @@
 
 	// Remove a todo
 	function removeTodo(id: string): void {
-		console.log('REmove')
 		todos = todos.filter((todo) => todo.id !== id)
+	}
+
+	// Edit a todo
+	function editTodo(id: string, text: string): void {
+		let currentTodo = todos.findIndex((todo) => todo.id === id)
+		todos[currentTodo].text = text
 	}
 </script>
 
@@ -62,7 +67,7 @@
 		{#if todos.length > 0}
 			<ul class="todo-list">
 				{#each todos as todo (todo.id)}
-					<TodoComponent {todo} {toggleTodo} {removeTodo} />
+					<TodoComponent {todo} {toggleTodo} {removeTodo} {editTodo} />
 				{/each}
 			</ul>
 		{/if}
