@@ -1,24 +1,26 @@
 <script lang="ts">
 	import { generateRandomId } from '$root/helpers/generateRandomId'
 	import type { Filter, Todo } from '$root/types/Todo'
+	import { useStorage } from '$root/stores/useStorage'
 	import AddTodo from './AddTodo.svelte'
 	import TodoComponent from './Todo.svelte'
 	import TodosFilter from './TodosFilter.svelte'
 
 	// dummy data
-	let todos: Array<Todo> = [
-		{ id: '1e4a59703af84', text: 'Todo 1', completed: true },
-		{ id: '9e09bcd7b9349', text: 'Todo 2', completed: false },
-		{ id: '9e4273a51a37c', text: 'Todo 3', completed: false },
-		{ id: '53ae48bf605cc', text: 'Todo 4', completed: false },
-	]
+	// let todos: Array<Todo> = [
+	// 	{ id: '1e4a59703af84', text: 'Todo 1', completed: true },
+	// 	{ id: '9e09bcd7b9349', text: 'Todo 2', completed: false },
+	// 	{ id: '9e4273a51a37c', text: 'Todo 3', completed: false },
+	// 	{ id: '53ae48bf605cc', text: 'Todo 4', completed: false },
+	// ]
 
-	$: console.log(todos)
-	$: todosLeft = todos.filter((todo) => !todo.completed).length
-	$: todosCompleted = todos.length - todosLeft
-
+	let todos = useStorage<Array<Todo>>('todos', [])
 	let filter: Filter = 'all'
-	$: filteredTodos = filterTodos(todos, filter)
+
+	// derived
+	$: todosLeft = $todos.filter((todo) => !todo.completed).length
+	$: todosCompleted = $todos.length - todosLeft
+	$: filteredTodos = filterTodos($todos, filter)
 
 	// Add a todo to todo list
 	function addTodo(todo: string): void {
@@ -28,14 +30,14 @@
 			completed: false,
 		}
 
-		todos = [...todos, newTodo]
+		$todos = [...$todos, newTodo]
 	}
 
 	// Mark all todos as completed or not completed
 	function toggleAllTodos(event: MouseEvent): void {
 		const { checked } = event.target as HTMLInputElement
 
-		todos = todos.map((todo) => ({
+		$todos = $todos.map((todo) => ({
 			...todo,
 			completed: checked,
 		}))
@@ -43,7 +45,7 @@
 
 	// Mark a todo as completed or not completed
 	function toggleTodo(id: string): void {
-		todos = todos.map((todo) => {
+		$todos = $todos.map((todo) => {
 			if (todo.id === id) {
 				todo.completed = !todo.completed
 			}
@@ -54,13 +56,13 @@
 
 	// Remove a todo
 	function removeTodo(id: string): void {
-		todos = todos.filter((todo) => todo.id !== id)
+		$todos = $todos.filter((todo) => todo.id !== id)
 	}
 
 	// Edit a todo
 	function editTodo(id: string, text: string): void {
-		let currentTodo = todos.findIndex((todo) => todo.id === id)
-		todos[currentTodo].text = text
+		let currentTodo = $todos.findIndex((todo) => todo.id === id)
+		$todos[currentTodo].text = text
 	}
 
 	function setFilter(selectedFilter: Filter): void {
@@ -81,7 +83,7 @@
 
 	// Remove all completed todos
 	function clearCompleted(): void {
-		todos = todos.filter((todo) => !todo.completed)
+		$todos = $todos.filter((todo) => !todo.completed)
 	}
 </script>
 
@@ -89,9 +91,9 @@
 	<h1 class="title">Todo List</h1>
 
 	<section class="todos">
-		<AddTodo {addTodo} {toggleAllTodos} showMarkAll={todos.length > 0} />
+		<AddTodo {addTodo} {toggleAllTodos} showMarkAll={$todos.length > 0} />
 
-		{#if todos.length > 0}
+		{#if $todos.length > 0}
 			<ul class="todo-list">
 				{#each filteredTodos as todo (todo.id)}
 					<TodoComponent {todo} {toggleTodo} {removeTodo} {editTodo} />
