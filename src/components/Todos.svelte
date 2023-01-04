@@ -15,6 +15,7 @@
 
 	$: console.log(todos)
 	$: todosLeft = todos.filter((todo) => !todo.completed).length
+	$: todosCompleted = todos.length - todosLeft
 
 	let filter: Filter = 'all'
 	$: filteredTodos = filterTodos(todos, filter)
@@ -77,6 +78,11 @@
 				return todos.filter((todo) => todo.completed)
 		}
 	}
+
+	// Remove all completed todos
+	function clearCompleted(): void {
+		todos = todos.filter((todo) => !todo.completed)
+	}
 </script>
 
 <main>
@@ -95,8 +101,12 @@
 
 		<div class="actions">
 			<span class="todo-count">{todosLeft} left</span>
-			<TodosFilter {filter} {setFilter} />
-			<button class="clear-completed">Clear completed</button>
+			<TodosFilter selectedFilter={filter} {setFilter} />
+			<button
+				class="clear-completed"
+				class:hidden={todosCompleted === 0}
+				on:click={() => clearCompleted()}>Clear completed</button
+			>
 		</div>
 	</section>
 </main>
