@@ -45,6 +45,12 @@
 			return todo
 		})
 	}
+
+	// Remove a todo
+	function removeTodo(id: string): void {
+		console.log('REmove')
+		todos = todos.filter((todo) => todo.id !== id)
+	}
 </script>
 
 <main>
@@ -56,7 +62,7 @@
 		{#if todos.length > 0}
 			<ul class="todo-list">
 				{#each todos as todo (todo.id)}
-					<TodoComponent {todo} {toggleTodo} />
+					<TodoComponent {todo} {toggleTodo} {removeTodo} />
 				{/each}
 			</ul>
 		{/if}

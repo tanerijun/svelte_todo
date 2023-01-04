@@ -3,6 +3,7 @@
 
 	export let todo: Todo
 	export let toggleTodo: (id: string) => void
+	export let removeTodo: (id: string) => void
 </script>
 
 <li class="todo">
@@ -18,7 +19,11 @@
 			<label aria-label="Check todo" class="todo-check" for="todo" />
 		</div>
 		<span class="todo-text" class:completed={todo.completed}>{todo.text}</span>
-		<button aria-label="Remove todo" class="remove" />
+		<button
+			aria-label="Remove todo"
+			class="remove"
+			on:click={() => removeTodo(todo.id)}
+		/>
 	</div>
 
 	<!-- svelte-ignore a11y-autofocus -->
