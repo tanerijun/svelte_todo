@@ -1,69 +1,24 @@
 <script lang="ts">
-	import { generateRandomId } from '$root/helpers/generateRandomId'
+	import {
+		addTodo,
+		clearCompletedTodos,
+		editTodo,
+		removeTodo,
+		todos,
+		toggleAllTodos,
+		toggleTodo,
+	} from '$root/stores/todos'
 	import type { Filter, Todo } from '$root/types/Todo'
-	import { useStorage } from '$root/stores/useStorage'
 	import AddTodo from './AddTodo.svelte'
 	import TodoComponent from './Todo.svelte'
 	import TodosFilter from './TodosFilter.svelte'
 
-	// dummy data
-	// let todos: Array<Todo> = [
-	// 	{ id: '1e4a59703af84', text: 'Todo 1', completed: true },
-	// 	{ id: '9e09bcd7b9349', text: 'Todo 2', completed: false },
-	// 	{ id: '9e4273a51a37c', text: 'Todo 3', completed: false },
-	// 	{ id: '53ae48bf605cc', text: 'Todo 4', completed: false },
-	// ]
-
-	let todos = useStorage<Array<Todo>>('todos', [])
 	let filter: Filter = 'all'
 
 	// derived
 	$: todosLeft = $todos.filter((todo) => !todo.completed).length
 	$: todosCompleted = $todos.length - todosLeft
 	$: filteredTodos = filterTodos($todos, filter)
-
-	// Add a todo to todo list
-	function addTodo(todo: string): void {
-		let newTodo: Todo = {
-			id: generateRandomId(),
-			text: todo,
-			completed: false,
-		}
-
-		$todos = [...$todos, newTodo]
-	}
-
-	// Mark all todos as completed or not completed
-	function toggleAllTodos(event: MouseEvent): void {
-		const { checked } = event.target as HTMLInputElement
-
-		$todos = $todos.map((todo) => ({
-			...todo,
-			completed: checked,
-		}))
-	}
-
-	// Mark a todo as completed or not completed
-	function toggleTodo(id: string): void {
-		$todos = $todos.map((todo) => {
-			if (todo.id === id) {
-				todo.completed = !todo.completed
-			}
-
-			return todo
-		})
-	}
-
-	// Remove a todo
-	function removeTodo(id: string): void {
-		$todos = $todos.filter((todo) => todo.id !== id)
-	}
-
-	// Edit a todo
-	function editTodo(id: string, text: string): void {
-		let currentTodo = $todos.findIndex((todo) => todo.id === id)
-		$todos[currentTodo].text = text
-	}
 
 	function setFilter(selectedFilter: Filter): void {
 		filter = selectedFilter
@@ -79,11 +34,6 @@
 			case 'completed':
 				return todos.filter((todo) => todo.completed)
 		}
-	}
-
-	// Remove all completed todos
-	function clearCompleted(): void {
-		$todos = $todos.filter((todo) => !todo.completed)
 	}
 </script>
 
@@ -107,7 +57,7 @@
 			<button
 				class="clear-completed"
 				class:hidden={todosCompleted === 0}
-				on:click={() => clearCompleted()}>Clear completed</button
+				on:click={() => clearCompletedTodos()}>Clear completed</button
 			>
 		</div>
 	</section>
