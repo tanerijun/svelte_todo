@@ -8,20 +8,27 @@
 		toggleAllTodos,
 		toggleTodo,
 	} from '$root/stores/todos'
+	import { tick } from 'svelte'
 	import type { Filter, Todo } from '$root/types/Todo'
 	import AddTodo from './AddTodo.svelte'
 	import TodoComponent from './Todo.svelte'
 	import TodosFilter from './TodosFilter.svelte'
 
 	let filter: Filter = 'all'
+	let filtering = false
 
 	// derived
 	$: todosLeft = $todos.filter((todo) => !todo.completed).length
 	$: todosCompleted = $todos.length - todosLeft
 	$: filteredTodos = filterTodos($todos, filter)
+	$: animationDuration = filtering ? 0 : 250
 
-	function setFilter(selectedFilter: Filter): void {
+	async function setFilter(selectedFilter: Filter): Promise<void> {
+		filtering = true
+		await tick()
 		filter = selectedFilter
+		await tick()
+		filtering = false
 	}
 
 	// Filter todos based on selected filter
@@ -46,7 +53,13 @@
 		{#if $todos.length > 0}
 			<ul class="todo-list">
 				{#each filteredTodos as todo (todo.id)}
-					<TodoComponent {todo} {toggleTodo} {removeTodo} {editTodo} />
+					<TodoComponent
+						{todo}
+						{toggleTodo}
+						{removeTodo}
+						{editTodo}
+						{animationDuration}
+					/>
 				{/each}
 			</ul>
 		{/if}
