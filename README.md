@@ -2,6 +2,14 @@
 
 A clone of [TodoMVC](https://todomvc.com/examples/vanillajs/) built with Svelte + TypeScript.
 
-Requirements:
-1. CRUD
-2. Persistance using local storage
+## Installation
+
+1. Clone the project
+2. Install dependencies
+   ```
+   pnpm i
+   ```
+3. Run locally
+   ```
+   pnpm dev
+   ```
