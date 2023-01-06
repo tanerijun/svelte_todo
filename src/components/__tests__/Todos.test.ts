@@ -1,4 +1,11 @@
-import { fireEvent, render, screen } from '@testing-library/svelte'
+import {
+	cleanup,
+	fireEvent,
+	render,
+	screen,
+	waitFor,
+	waitForElementToBeRemoved,
+} from '@testing-library/svelte'
 import Todos from '../Todos.svelte'
 
 afterEach(() => {
@@ -54,5 +61,28 @@ describe('Testing Todos', () => {
 
 		expect(todo).toHaveTextContent(changedValue)
 		expect(screen.queryByText(value)).toBeNull()
+	})
+
+	it('should allow user to remove todo', async () => {
+		render(Todos)
+		let value = 'To be removed'
+		let todoInputElement = screen.getByPlaceholderText(
+			/what needs to be done?/i
+		)
+
+		await fireEvent.input(todoInputElement, { target: { value } })
+		await fireEvent.submit(todoInputElement)
+
+		expect(screen.getByText(value)).toBeInTheDocument()
+
+		let removeTodoButton = screen.getAllByTestId('remove').pop()
+		await fireEvent.click(removeTodoButton)
+
+		await waitFor(
+			() => {
+				expect(screen.queryByText(value)).not.toBeInTheDocument()
+			},
+			{ timeout: 1250 }
+		)
 	})
 })

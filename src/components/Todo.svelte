@@ -58,6 +58,7 @@
 		>
 		<button
 			aria-label="Remove todo"
+			data-testid="remove"
 			class="remove"
 			on:click={() => removeTodo(todo.id)}
 		/>
