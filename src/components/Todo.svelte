@@ -66,6 +66,7 @@
 	{#if editing}
 		<!-- svelte-ignore a11y-autofocus -->
 		<input
+			data-testid="edit"
 			class="edit"
 			type="text"
 			value={todo.text}

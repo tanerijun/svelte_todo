@@ -32,4 +32,27 @@ describe('Testing Todos', () => {
 			expect(screen.getByText(value)).toBeInTheDocument()
 		}
 	})
+
+	it('should allow user to edit todo', async () => {
+		render(Todos)
+		let value = 'to be changed'
+		let todoInputElement = screen.getByPlaceholderText(
+			/what needs to be done?/i
+		)
+
+		await fireEvent.input(todoInputElement, { target: { value } })
+		await fireEvent.submit(todoInputElement)
+
+		let todo = screen.getByText(value)
+		await fireEvent.doubleClick(todo)
+
+		let changedValue = 'changed'
+		let editInputElement = screen.getByTestId('edit')
+
+		await fireEvent.input(editInputElement, { target: { value: changedValue } })
+		await fireEvent.keyDown(document.activeElement, { key: 'Enter' })
+
+		expect(todo).toHaveTextContent(changedValue)
+		expect(screen.queryByText(value)).toBeNull()
+	})
 })
