@@ -18,4 +18,18 @@ describe('Testing Todos', () => {
 
 		expect(screen.getByText(value)).toBeInTheDocument()
 	})
+
+	it('should render multiple todos when user add them', async () => {
+		render(Todos)
+		let values = ['Todo Item 1', 'Todo Item 2', 'Todo Item 3', 'Todo Item 4']
+		let todoInputElement = screen.getByPlaceholderText(
+			/what needs to be done?/i
+		)
+
+		for (let value of values) {
+			await fireEvent.input(todoInputElement, { target: { value } })
+			await fireEvent.submit(todoInputElement)
+			expect(screen.getByText(value)).toBeInTheDocument()
+		}
+	})
 })
