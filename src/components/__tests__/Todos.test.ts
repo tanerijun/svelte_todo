@@ -1,11 +1,4 @@
-import {
-	cleanup,
-	fireEvent,
-	render,
-	screen,
-	waitFor,
-	waitForElementToBeRemoved,
-} from '@testing-library/svelte'
+import { fireEvent, render, screen, waitFor } from '@testing-library/svelte'
 import Todos from '../Todos.svelte'
 
 afterEach(() => {
