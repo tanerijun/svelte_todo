@@ -14,6 +14,7 @@
 	import TodoComponent from './Todo.svelte'
 	import TodosFilter from './TodosFilter.svelte'
 	import TodosLeft from './TodosLeft.svelte'
+	import ClearCompleted from './ClearCompleted.svelte'
 
 	let filter: Filter = 'all'
 	let filtering = false
@@ -68,11 +69,7 @@
 		<div class="actions">
 			<TodosLeft {todosLeft} />
 			<TodosFilter selectedFilter={filter} {setFilter} />
-			<button
-				class="clear-completed"
-				class:hidden={todosCompleted === 0}
-				on:click={() => clearCompletedTodos()}>Clear completed</button
-			>
+			<ClearCompleted hidden={todosCompleted === 0} {clearCompletedTodos} />
 		</div>
 	</section>
 </main>
