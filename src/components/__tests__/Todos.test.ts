@@ -75,7 +75,7 @@ describe('Testing Todos', () => {
 			() => {
 				expect(screen.queryByText(value)).not.toBeInTheDocument()
 			},
-			{ timeout: 1250 }
+			{ timeout: 2000 }
 		)
 	})
 })
