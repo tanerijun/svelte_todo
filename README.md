@@ -13,3 +13,7 @@ A clone of [TodoMVC](https://todomvc.com/examples/vanillajs/) built with Svelte 
    ```
    pnpm dev
    ```
+
+## Demo
+
+[Live here](https://svelte-todo-rho.vercel.app/)
