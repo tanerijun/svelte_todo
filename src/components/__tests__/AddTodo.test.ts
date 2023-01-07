@@ -12,13 +12,13 @@ function renderAddTodo() {
 	return props
 }
 
-test('input should have focus on page load', () => {
+it('should focus input on page load', () => {
 	renderAddTodo()
 	let todoInputElement = screen.getByPlaceholderText(/what needs to be done/i)
 	expect(todoInputElement).toHaveFocus()
 })
 
-test('user is able to type into the input', async () => {
+it('should allow user to type into the input', async () => {
 	renderAddTodo()
 
 	let inputValue = 'Todo Item'
@@ -28,7 +28,7 @@ test('user is able to type into the input', async () => {
 	expect(todoInputElement).toHaveValue(inputValue)
 })
 
-test('user is able to submit todo', async () => {
+test('should allow user to submit todo', async () => {
 	let { addTodo } = renderAddTodo()
 
 	let inputValue = 'Todo Item'
