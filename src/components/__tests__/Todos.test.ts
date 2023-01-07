@@ -129,4 +129,44 @@ describe('Testing Todos', () => {
 			{ timeout: 2000 }
 		)
 	})
+
+	it('should clear all completed todos when user click on the clear completed button', async () => {
+		render(Todos)
+		let todoInputElement = screen.getByPlaceholderText(
+			/what needs to be done?/i
+		)
+		let values = [
+			'To be deleted A',
+			'To be deleted B',
+			'To be deleted C',
+			'To be deleted D',
+		]
+
+		for (let value of values) {
+			await fireEvent.input(todoInputElement, { target: { value } })
+			await fireEvent.submit(todoInputElement)
+		}
+
+		// Check the checkbox
+		fireEvent.click(screen.getByTestId('To be deleted A'))
+		fireEvent.click(screen.getByTestId('To be deleted B'))
+		fireEvent.click(screen.getByTestId('To be deleted C'))
+		fireEvent.click(screen.getByTestId('To be deleted D'))
+
+		let clearCompletedBtn = screen.getByRole('button', {
+			name: /clear completed/i,
+		})
+
+		await fireEvent.click(clearCompletedBtn)
+
+		await waitFor(
+			() => {
+				expect(screen.queryByText(/To be deleted A/i)).not.toBeInTheDocument()
+				expect(screen.queryByText(/To be deleted B/i)).not.toBeInTheDocument()
+				expect(screen.queryByText(/To be deleted C/i)).not.toBeInTheDocument()
+				expect(screen.queryByText(/To be deleted D/i)).not.toBeInTheDocument()
+			},
+			{ timeout: 2000 }
+		)
+	})
 })
