@@ -13,6 +13,7 @@
 	import AddTodo from './AddTodo.svelte'
 	import TodoComponent from './Todo.svelte'
 	import TodosFilter from './TodosFilter.svelte'
+	import TodosLeft from './TodosLeft.svelte'
 
 	let filter: Filter = 'all'
 	let filtering = false
@@ -65,7 +66,7 @@
 		{/if}
 
 		<div class="actions">
-			<span class="todo-count">{todosLeft} left</span>
+			<TodosLeft {todosLeft} />
 			<TodosFilter selectedFilter={filter} {setFilter} />
 			<button
 				class="clear-completed"
