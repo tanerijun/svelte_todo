@@ -43,6 +43,7 @@
 	<div class="todo-item">
 		<div>
 			<input
+				data-testid={todo.text}
 				id="todo"
 				class="toggle"
 				type="checkbox"

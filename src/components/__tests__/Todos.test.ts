@@ -71,9 +71,60 @@ describe('Testing Todos', () => {
 		let removeTodoButton = screen.getAllByTestId('remove').pop()
 		await fireEvent.click(removeTodoButton)
 
+		// Wait for animation
 		await waitFor(
 			() => {
 				expect(screen.queryByText(value)).not.toBeInTheDocument()
+			},
+			{ timeout: 2000 }
+		)
+	})
+
+	it('should allow user to filter todos', async () => {
+		render(Todos)
+		let todoInputElement = screen.getByPlaceholderText(
+			/what needs to be done?/i
+		)
+		let values = ['Todo A', 'Todo B', 'Todo C', 'Todo D']
+
+		for (let value of values) {
+			await fireEvent.input(todoInputElement, { target: { value } })
+			await fireEvent.submit(todoInputElement)
+		}
+
+		// Check the checkbox
+		fireEvent.click(screen.getByTestId('Todo A'))
+		fireEvent.click(screen.getByTestId('Todo B'))
+
+		let allFilterBtn = screen.getByRole('button', { name: 'all' })
+		let activeFilterBtn = screen.getByRole('button', { name: 'active' })
+		let completedFilterBtn = screen.getByRole('button', { name: 'completed' })
+
+		await fireEvent.click(activeFilterBtn)
+		await waitFor(
+			() => {
+				expect(screen.queryByText('Todo A')).not.toBeInTheDocument()
+				expect(screen.queryByText('Todo B')).not.toBeInTheDocument()
+			},
+			{ timeout: 2000 }
+		)
+
+		await fireEvent.click(completedFilterBtn)
+		await waitFor(
+			() => {
+				expect(screen.queryByText('Todo C')).not.toBeInTheDocument()
+				expect(screen.queryByText('Todo D')).not.toBeInTheDocument()
+			},
+			{ timeout: 2000 }
+		)
+
+		await fireEvent.click(allFilterBtn)
+		await waitFor(
+			() => {
+				expect(screen.queryByText('Todo A')).toBeInTheDocument()
+				expect(screen.queryByText('Todo B')).toBeInTheDocument()
+				expect(screen.queryByText('Todo C')).toBeInTheDocument()
+				expect(screen.queryByText('Todo D')).toBeInTheDocument()
 			},
 			{ timeout: 2000 }
 		)
